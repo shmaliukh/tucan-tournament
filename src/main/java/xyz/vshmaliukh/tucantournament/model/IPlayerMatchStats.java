@@ -2,6 +2,11 @@ package xyz.vshmaliukh.tucantournament.model;
 
 import xyz.vshmaliukh.tucantournament.model.imp.Action;
 
+/**
+ * Author: vshmaliukh
+ * Represents the statistics of a player in a match.
+ * This interface extends the CalcPoints interface and defines the properties and methods to access player match statistics.
+ */
 public interface IPlayerMatchStats extends CalcPoints {
 
     void addAction(Action action, int counter);

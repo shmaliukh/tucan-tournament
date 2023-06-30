@@ -7,6 +7,10 @@ import xyz.vshmaliukh.tucantournament.model.imp.Action;
 
 import java.util.*;
 
+/**
+ * Author: vshmaliukh
+ * Component that provides actions for different sports such as basketball and handball.
+ */
 @Component
 public class SportActionsProvider {
 
@@ -22,6 +26,9 @@ public class SportActionsProvider {
         initializeSportActions();
     }
 
+    /**
+     * Initializes the sport actions for basketball and handball.
+     */
     private void initializeSportActions() {
         initBasketballActions();
         initHandballActions();
@@ -47,6 +54,13 @@ public class SportActionsProvider {
         sportActionsMap.put(SPORT_BASKETBALL_STR, basketballActionSet);
     }
 
+    /**
+     * Retrieves the action by sport and position (index).
+     *
+     * @param sportStr the sport string ("basketball", "handball", ...)
+     * @param index    the position (index) of the action
+     * @return an Optional containing the Action if found, or an empty Optional if not found
+     */
     public Optional<Action> getActionBySportAndPosition(String sportStr, int index) {
         // TODO refactor actions provider structure
         return sportActionsMap.get(sportStr.toLowerCase()).stream()
@@ -54,9 +68,16 @@ public class SportActionsProvider {
                 .findFirst();
     }
 
+
+    /**
+     * Class contains configuration properties related to different sports,
+     * such as player match statistics indices for name, number, team name,
+     * and other specific indices for basketball and handball.
+     */
     @Configuration
     public static class SportDataConfig {
 
+        // Player Match Stats
         @Value("${sport.player.name.row_index:#{0}}")
         public int playerMatchStatsNameIndex;
         @Value("${sport.player.nick.row_index:#{1}}")

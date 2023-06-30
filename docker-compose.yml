@@ -1,0 +1,21 @@
+version: "3.5"
+
+services:
+  app:
+    build:
+      context: .
+      args:
+        JDK_VERSION: ${JDK_VERSION}
+        APP_MODULE_NAME: ${APP_MODULE_NAME}
+        APP_VERSION: ${APP_VERSION}
+        APP_PORT: ${APP_PORT}
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - "/data/${APP_MODULE_NAME}:/host_dir/${APP_MODULE_NAME}/"
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "2000M"

@@ -15,16 +15,29 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+/**
+ * Author: vshmaliukh
+ * Class is a service component in the application that is responsible for analyzing
+ * statistics data from multiple files, calculating player ratings, and finding
+ * the most valuable player based on the ratings.
+ */
 @Slf4j
 @Service
 public class StatsService {
 
-    final StatsParser statsParser;
+    StatsParser statsParser;
 
     public StatsService(StatsParser statsParser) {
         this.statsParser = statsParser;
     }
 
+    /**
+     * Analyzes multiple files and calculates the rating for each player.
+     *
+     * @param files the array of files to analyze.
+     * @return a map containing player nicknames as keys and their ratings as values.
+     */
     public Map<String, Long> analyzeFilesAndGetPlayerRatingMap(MultipartFile[] files) {
         Map<String, Long> playerRatingMap = new HashMap<>();
         try {
@@ -37,12 +50,13 @@ public class StatsService {
         return playerRatingMap;
     }
 
-    private void analyzeOneFile(Map<String, Long> playerRatingMap, MultipartFile file) {
-        File convertedFile = Utils.convertMultipartFileToFile(file);
-        IGameStats gameStats = statsParser.parseGameStats(convertedFile);
-        persistNewGameStatsResult(playerRatingMap, gameStats);
-    }
 
+    /**
+     * Finds the most valuable player based on the player ratings.
+     *
+     * @param playerRatingMap the map of player nicknames and their ratings.
+     * @return the MostValuablePlayer object representing the most valuable player.
+     */
     public MostValuablePlayer findMostValuablePlayer(Map<String, Long> playerRatingMap) {
         String nickname = null;
         Long rating = Long.MIN_VALUE;
@@ -57,16 +71,34 @@ public class StatsService {
         return new MostValuablePlayer(nickname, rating);
     }
 
+    private void analyzeOneFile(Map<String, Long> playerRatingMap, MultipartFile file) {
+        File convertedFile = Utils.convertMultipartFileToFile(file);
+        IGameStats gameStats = statsParser.parseGameStats(convertedFile);
+        persistNewGameStatsResult(playerRatingMap, gameStats);
+    }
+
     private static void persistNewGameStatsResult(Map<String, Long> playerRatingMap, IGameStats gameStats) {
         Map<String, Long> playerNicknamePointesMap = collectNicknamePointsMap(gameStats);
         mergeNewGameStatsResultWithPrev(playerRatingMap, playerNicknamePointesMap);
     }
 
+    /**
+     * Collects the nickname and points map from the game statistics.
+     *
+     * @param gameStats the game statistics.
+     * @return a map with player nicknames as keys and their points as values.
+     */
     private static Map<String, Long> collectNicknamePointsMap(IGameStats gameStats) {
         return gameStats.getPlayerMatchStats().stream()
                 .collect(Collectors.toMap(PlayerMatchStats::getNickname, v -> (long) v.getCurrentMatchPoints()));
     }
 
+    /**
+     * Merges the new game statistics result with the previous ratings.
+     *
+     * @param playerRatingMap      the map of player ratings.
+     * @param playerNicknamePoints the map of player nicknames and points from the current game.
+     */
     private static void mergeNewGameStatsResultWithPrev(Map<String, Long> playerRatingMap, Map<String, Long> map) {
         for (Map.Entry<String, Long> entry : map.entrySet()) {
             String name = entry.getKey();

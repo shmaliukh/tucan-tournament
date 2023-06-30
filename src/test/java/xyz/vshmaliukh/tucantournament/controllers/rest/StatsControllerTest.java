@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 class StatsControllerTest {
 
-
     @Test
     void testDoPostFindMVPWithNoFiles() {
         StatsService statsService = mock(StatsService.class);
@@ -23,6 +22,5 @@ class StatsControllerTest {
         verifyNoInteractions(statsService);
         assertNull(mvp);
     }
-
 
 }

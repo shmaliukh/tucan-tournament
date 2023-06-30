@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- use Spring default values -->
+
+    <property name="LOGS_FOLDER" value="logs" />
+
+    <!-- Use Spring default values -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
+    <!-- Define the file appender to save logs to a file -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS_FOLDER}/tucan-tournament.log</file>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_FOLDER}/tucan-tournament-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Define the console appender for logging to console -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
@@ -11,6 +28,7 @@
     </appender>
 
     <root level="INFO">
+        <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>
     </root>
 
