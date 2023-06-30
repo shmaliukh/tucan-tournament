@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Game Stats Files</title>
+</head>
+
+<body>
+
+<h2>Upload Files</h2>
+
+<div>
+    <form th:action="@{/mvp}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="files" multiple="multiple" />
+        <br/><br/>
+        <button type="submit">Upload</button>
+    </form>
+</div>
+
+</body>
+</html>

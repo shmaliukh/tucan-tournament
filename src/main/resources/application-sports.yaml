@@ -1,0 +1,13 @@
+sport:
+  basketball:
+    score_point:
+      row_index: 4
+    rebound:
+      row_index: 5
+    assist:
+      row_index: 6
+  handball:
+    goal_made:
+      row_index: 4
+    goal_received:
+      row_index: 5
