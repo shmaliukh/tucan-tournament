@@ -1,8 +1,9 @@
 package xyz.vshmaliukh.tucantournament.handlers;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
-import xyz.vshmaliukh.tucantournament.model.Action;
+import xyz.vshmaliukh.tucantournament.model.imp.Action;
 
 import java.util.*;
 
@@ -14,22 +15,10 @@ public class SportActionsProvider {
 
     public final Map<String, Set<Action>> sportActionsMap = new HashMap<>();
 
-    // BASKETBALL
-    @Value("${sport.basketball.score_point.row_index}")
-    public int basketballScorePointIndex;
-    @Value("${sport.basketball.rebound.row_index}")
-    public int basketballReboundIndex;
-    @Value("${sport.basketball.assist.row_index}")
-    public int basketballAssistIndex;
+    SportDataConfig sportDataConfig;
 
-    // HANDBALL
-    @Value("${sport.handball.goal_made.row_index}")
-    public int handballGoalMadeIndex = 4;
-    @Value("${sport.handball.goal_received.row_index}")
-    public int handballGoalReceivedIndex = 5;
-
-
-    public SportActionsProvider() {
+    public SportActionsProvider(SportDataConfig sportDataConfig) {
+        this.sportDataConfig = sportDataConfig;
         initializeSportActions();
     }
 
@@ -42,8 +31,8 @@ public class SportActionsProvider {
         // HANDBALL
         Set<Action> handballActionSet = new HashSet<>();
 
-        handballActionSet.add(new Action("goal made", 2, handballGoalMadeIndex));
-        handballActionSet.add(new Action("goal received", -1, handballGoalReceivedIndex));
+        handballActionSet.add(new Action("goal made", sportDataConfig.handballGoalMadePoints, sportDataConfig.handballGoalMadeIndex));
+        handballActionSet.add(new Action("goal received", sportDataConfig.handballGoalReceivedPoints, sportDataConfig.handballGoalReceivedIndex));
 
         sportActionsMap.put(SPORT_HANDBALL_STR, handballActionSet);
     }
@@ -51,18 +40,58 @@ public class SportActionsProvider {
     private void initBasketballActions() {
         Set<Action> basketballActionSet = new HashSet<>();
 
-        basketballActionSet.add(new Action("scored point", 2, basketballScorePointIndex));
-        basketballActionSet.add(new Action("rebound", 1, basketballReboundIndex));
-        basketballActionSet.add(new Action("assist", 1, basketballAssistIndex));
+        basketballActionSet.add(new Action("scored point", sportDataConfig.basketballScorePointPoints, sportDataConfig.basketballScorePointIndex));
+        basketballActionSet.add(new Action("rebound", sportDataConfig.basketballReboundIndex, sportDataConfig.basketballReboundIndex));
+        basketballActionSet.add(new Action("assist", sportDataConfig.basketballAssistIndex, sportDataConfig.basketballAssistIndex));
 
         sportActionsMap.put(SPORT_BASKETBALL_STR, basketballActionSet);
     }
 
-    public Optional<Action> getActionBySportAndPosition(String sport, int position) {
+    public Optional<Action> getActionBySportAndPosition(String sportStr, int index) {
         // TODO refactor actions provider structure
-        return sportActionsMap.get(sport).stream()
-                .filter(action -> action.getIndex() == position)
+        return sportActionsMap.get(sportStr.toLowerCase()).stream()
+                .filter(action -> action.getIndex() == index)
                 .findFirst();
+    }
+
+    @Configuration
+    public static class SportDataConfig {
+
+        @Value("${sport.player.name.row_index:#{0}}")
+        public int playerMatchStatsNameIndex;
+        @Value("${sport.player.nick.row_index:#{1}}")
+        public int playerMatchStatsNickIndex;
+        @Value("${sport.player.number.row_index:#{2}}")
+        public int playerMatchStatsNumberIndex;
+        @Value("${sport.player.team_name.row_index:#{3}}")
+        public int playerMatchStatsTeamNameIndex;
+
+        // BASKETBALL
+        @Value("${sport.basketball.score_point.row_index:#{4}}")
+        public int basketballScorePointIndex;
+        @Value("${sport.basketball.rebound.row_index:#{5}}")
+        public int basketballReboundIndex;
+        @Value("${sport.basketball.assist.row_index:#{6}}")
+        public int basketballAssistIndex;
+
+        @Value("${sport.basketball.score_point.points:#{2}}")
+        public int basketballScorePointPoints;
+        @Value("${sport.basketball.rebound.points:#{1}}")
+        public int basketballReboundPoints;
+        @Value("${sport.basketball.assist.points:#{1}}")
+        public int basketballAssistPoints;
+
+        // HANDBALL
+        @Value("${sport.handball.goal_made.row_index:#{4}}")
+        public int handballGoalMadeIndex;
+        @Value("${sport.handball.goal_received.row_index:#{5}}")
+        public int handballGoalReceivedIndex;
+
+        @Value("${sport.handball.goal_made.points:#{2}}")
+        public int handballGoalMadePoints;
+        @Value("${sport.handball.goal_received.points:#{-1}}")
+        public int handballGoalReceivedPoints;
+
     }
 
 }

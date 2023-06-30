@@ -24,6 +24,7 @@ public class StatsController {
     public MostValuablePlayer doPostFindMVP(@RequestParam("files") MultipartFile[] files) {
         if (files != null && files.length != 0) {
             Map<String, Long> playerRatingMap = statsService.analyzeFilesAndGetPlayerRatingMap(files);
+            log.info("playerRatingMap: '{}'", playerRatingMap);
             return statsService.findMostValuablePlayer(playerRatingMap);
         } else {
             log.warn("no files about matches to find MostValuablePlayer");

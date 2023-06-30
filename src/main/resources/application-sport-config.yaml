@@ -1,0 +1,27 @@
+sport:
+  player:
+    name:
+      row_index: 0
+    nick:
+      row_index: 1
+    number:
+      row_index: 2
+    team_name:
+      row_index: 3
+  basketball:
+    score_point:
+      row_index: 4
+      points: 2
+    rebound:
+      row_index: 5
+      points: 1
+    assist:
+      row_index: 6
+      points: 1
+  handball:
+    goal_made:
+      row_index: 4
+      points: 2
+    goal_received:
+      row_index: 5
+      points: -1

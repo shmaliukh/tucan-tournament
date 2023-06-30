@@ -7,6 +7,10 @@ import xyz.vshmaliukh.tucantournament.convertors.imp.HandballRowToPlayerMatchSta
 import static xyz.vshmaliukh.tucantournament.handlers.SportActionsProvider.SPORT_BASKETBALL_STR;
 import static xyz.vshmaliukh.tucantournament.handlers.SportActionsProvider.SPORT_HANDBALL_STR;
 
+/**
+ * Author: vshmaliukh
+ * Component that provides the appropriate Convertor based on the convertor type (sport type str).
+ */
 @Component
 public class ConvertorProvider {
 
@@ -19,6 +23,13 @@ public class ConvertorProvider {
         this.handballRowToPlayerMatchStatsConvertor = handballRowToPlayerMatchStatsConvertor;
     }
 
+    /**
+     * Retrieves the appropriate Convertor based on the convertor type.
+     *
+     * @param convertorType the type of convertor (e.g., basketball, handball)
+     * @return the corresponding Convertor implementation
+     * @throws IllegalStateException if an unexpected convertor type is provided
+     */
     public Convertor getConvertorByType(String convertorType) {
         switch (convertorType) {
             case SPORT_BASKETBALL_STR -> {

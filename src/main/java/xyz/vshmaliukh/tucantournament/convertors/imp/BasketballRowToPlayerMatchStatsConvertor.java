@@ -10,17 +10,17 @@ import java.util.List;
 @Component
 public class BasketballRowToPlayerMatchStatsConvertor extends AbstractRowToPlayerMatchStatsConvertor {
 
-    public BasketballRowToPlayerMatchStatsConvertor(SportActionsProvider sportActionsProvider) {
-        super(sportActionsProvider);
+    protected BasketballRowToPlayerMatchStatsConvertor(SportActionsProvider sportActionsProvider, SportActionsProvider.SportDataConfig sportDataConfig) {
+        super(sportActionsProvider, sportDataConfig);
     }
 
     @Override
     public PlayerMatchStats convertRowToPlayerMatchStats(String sportType, List<String> row) {
         PlayerMatchStats playerMatchStats = super.convertRowToPlayerMatchStats(sportType, row);
 
-        convertValueToIntegerByIndex(sportType, sportActionsProvider.basketballScorePointIndex, playerMatchStats, row);
-        convertValueToIntegerByIndex(sportType, sportActionsProvider.basketballReboundIndex, playerMatchStats, row);
-        convertValueToIntegerByIndex(sportType, sportActionsProvider.basketballAssistIndex, playerMatchStats, row);
+        convertValueToIntegerByIndex(sportType, sportDataConfig.basketballScorePointIndex, playerMatchStats, row);
+        convertValueToIntegerByIndex(sportType, sportDataConfig.basketballReboundIndex, playerMatchStats, row);
+        convertValueToIntegerByIndex(sportType, sportDataConfig.basketballAssistIndex, playerMatchStats, row);
 
         return playerMatchStats;
     }

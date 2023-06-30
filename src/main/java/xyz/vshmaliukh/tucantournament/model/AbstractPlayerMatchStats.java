@@ -3,6 +3,7 @@ package xyz.vshmaliukh.tucantournament.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import xyz.vshmaliukh.tucantournament.model.imp.Action;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
 @Slf4j
 @Data
 @NoArgsConstructor
-public abstract class AbstractPlayerMatchStats implements CalcPoints {
+public abstract class AbstractPlayerMatchStats implements IPlayerMatchStats {
 
     protected String playerName;
     protected String nickname;
@@ -24,6 +25,7 @@ public abstract class AbstractPlayerMatchStats implements CalcPoints {
 
     protected Map<Action, Integer> actionCounterMap = new HashMap<>();
 
+    @Override
     public void addAction(Action action, int counter) {
         actionCounterMap.put(action, counter);
         log.debug("added new actions '{}', actions counter: '{}' to player with nickname '{}'", action, counter, nickname);

@@ -1,32 +1,47 @@
 package xyz.vshmaliukh.tucantournament.convertors;
 
-import xyz.vshmaliukh.tucantournament.Constants;
 import xyz.vshmaliukh.tucantournament.handlers.SportActionsProvider;
-import xyz.vshmaliukh.tucantournament.model.Action;
+import xyz.vshmaliukh.tucantournament.model.imp.Action;
 import xyz.vshmaliukh.tucantournament.model.imp.PlayerMatchStats;
 
 import java.util.List;
 import java.util.Optional;
 
-public abstract class AbstractRowToPlayerMatchStatsConvertor implements Convertor {
+/**
+ * Author: vshmaliukh
+ * Abstract class implementing the IRowToPlayerMatchStatsConvertor interface.
+ * Provides common functionality for converting a row of data to PlayerMatchStats object.
+ */
+public abstract class AbstractRowToPlayerMatchStatsConvertor implements IRowToPlayerMatchStatsConvertor {
 
     protected SportActionsProvider sportActionsProvider;
+    protected final SportActionsProvider.SportDataConfig sportDataConfig;
 
-    protected AbstractRowToPlayerMatchStatsConvertor(SportActionsProvider sportActionsProvider) {
+    protected AbstractRowToPlayerMatchStatsConvertor(SportActionsProvider sportActionsProvider,
+                                                     SportActionsProvider.SportDataConfig sportDataConfig) {
         this.sportActionsProvider = sportActionsProvider;
+        this.sportDataConfig = sportDataConfig;
     }
 
+    /**
+     * Constructor for AbstractRowToPlayerMatchStatsConvertor.
+     *
+     * @param sportActionsProvider the SportActionsProvider to retrieve sport actions
+     * @param sportDataConfig      the configuration for sport data indexes
+     * @return the converted PlayerMatchStats object
+     */
     public PlayerMatchStats convertRowToPlayerMatchStats(String sportType, List<String> row) {
         PlayerMatchStats playerMatchStats = new PlayerMatchStats();
         playerMatchStats.setSportType(sportType);
-        playerMatchStats.setPlayerName(row.get(Constants.PLAYER_MATCH_STATS_NAME_INDEX));
-        playerMatchStats.setNickname(row.get(Constants.PLAYER_MATCH_STATS_NICK_INDEX));
-        playerMatchStats.setNumber(Integer.parseInt(row.get(Constants.PLAYER_MATCH_STATS_NUMBER_INDEX)));
-        playerMatchStats.setTeamName(row.get(Constants.PLAYER_MATCH_STATS_TEAM_NAME_INDEX));
+        playerMatchStats.setPlayerName(row.get(sportDataConfig.playerMatchStatsNameIndex));
+        playerMatchStats.setNickname(row.get(sportDataConfig.playerMatchStatsNickIndex));
+        playerMatchStats.setNumber(Integer.parseInt(row.get(sportDataConfig.playerMatchStatsNumberIndex)));
+        playerMatchStats.setTeamName(row.get(sportDataConfig.playerMatchStatsTeamNameIndex));
         return playerMatchStats;
     }
 
-    protected void convertValueToIntegerByIndex(String sportType, int valueIndex, PlayerMatchStats playerMatchStats, List<String> row) {
+    @Override
+    public void convertValueToIntegerByIndex(String sportType, int valueIndex, PlayerMatchStats playerMatchStats, List<String> row) {
         Optional<Action> optionalScorePointAction = sportActionsProvider.getActionBySportAndPosition(sportType, valueIndex);
         optionalScorePointAction.ifPresent(action -> playerMatchStats.addAction(action, Integer.parseInt(row.get(valueIndex))));
     }

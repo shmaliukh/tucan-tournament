@@ -3,13 +3,13 @@ package xyz.vshmaliukh.tucantournament.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import xyz.vshmaliukh.tucantournament.model.GameStats;
 import xyz.vshmaliukh.tucantournament.exceptions.MultipartFileToFileException;
 import xyz.vshmaliukh.tucantournament.exceptions.ParseStatsFromFileException;
 import xyz.vshmaliukh.tucantournament.Utils;
+import xyz.vshmaliukh.tucantournament.model.IGameStats;
 import xyz.vshmaliukh.tucantournament.model.imp.PlayerMatchStats;
 import xyz.vshmaliukh.tucantournament.model.dto.MostValuablePlayer;
-import xyz.vshmaliukh.tucantournament.parser.StatsParser;
+import xyz.vshmaliukh.tucantournament.handlers.StatsParser;
 
 import java.io.File;
 import java.util.*;
@@ -39,7 +39,7 @@ public class StatsService {
 
     private void analyzeOneFile(Map<String, Long> playerRatingMap, MultipartFile file) {
         File convertedFile = Utils.convertMultipartFileToFile(file);
-        GameStats gameStats = statsParser.parseGameStats(convertedFile);
+        IGameStats gameStats = statsParser.parseGameStats(convertedFile);
         persistNewGameStatsResult(playerRatingMap, gameStats);
     }
 
@@ -57,14 +57,14 @@ public class StatsService {
         return new MostValuablePlayer(nickname, rating);
     }
 
-    private static void persistNewGameStatsResult(Map<String, Long> playerRatingMap, GameStats gameStats) {
+    private static void persistNewGameStatsResult(Map<String, Long> playerRatingMap, IGameStats gameStats) {
         Map<String, Long> playerNicknamePointesMap = collectNicknamePointsMap(gameStats);
         mergeNewGameStatsResultWithPrev(playerRatingMap, playerNicknamePointesMap);
     }
 
-    private static Map<String, Long> collectNicknamePointsMap(GameStats gameStats) {
+    private static Map<String, Long> collectNicknamePointsMap(IGameStats gameStats) {
         return gameStats.getPlayerMatchStats().stream()
-                .collect(Collectors.groupingBy(PlayerMatchStats::getNickname, Collectors.summingLong(PlayerMatchStats::getCurrentMatchPoints)));
+                .collect(Collectors.toMap(PlayerMatchStats::getNickname, v -> (long) v.getCurrentMatchPoints()));
     }
 
     private static void mergeNewGameStatsResultWithPrev(Map<String, Long> playerRatingMap, Map<String, Long> map) {
