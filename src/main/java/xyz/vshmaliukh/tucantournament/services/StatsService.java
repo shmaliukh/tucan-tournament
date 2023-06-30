@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @Service
 public class StatsService {
 
+    public static final MostValuablePlayer EMPTY_DEFAULT_MOST_VALUABLE_PLAYER = new MostValuablePlayer(null, null);
     StatsParser statsParser;
 
     public StatsService(StatsParser statsParser) {
@@ -68,7 +69,7 @@ public class StatsService {
             }
         }
 
-        return new MostValuablePlayer(nickname, rating);
+        return nickname != null ? new MostValuablePlayer(nickname, rating) : EMPTY_DEFAULT_MOST_VALUABLE_PLAYER;
     }
 
     private void analyzeOneFile(Map<String, Long> playerRatingMap, MultipartFile file) {
@@ -94,10 +95,12 @@ public class StatsService {
     }
 
     /**
-     * Merges the new game statistics result with the previous ratings.
+     * Merges the new game stats result with the previous player rating map.
+     * The method takes a player rating map and a map containing new game stats.
+     * It merges the values from the new game stats map into the player rating map.
      *
-     * @param playerRatingMap      the map of player ratings.
-     * @param playerNicknamePoints the map of player nicknames and points from the current game.
+     * @param playerRatingMap The map containing the player ratings.
+     * @param map The map containing the new game stats.
      */
     private static void mergeNewGameStatsResultWithPrev(Map<String, Long> playerRatingMap, Map<String, Long> map) {
         for (Map.Entry<String, Long> entry : map.entrySet()) {
